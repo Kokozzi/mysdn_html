@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SDN Project | Main </title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/topology.css" rel="stylesheet">
+    
+<style>
+    .col-lg-12 {
+        bottom: 5%;
+        position: absolute;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">User name</strong>
+                             </span> <span class="text-muted text-xs block">User role <b class="caret"></b></span> </span> </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><a href="#">Logout</a></li>
+                            </ul>
+                    </div>
+                    <div class="logo-element">
+                        SDN
+                    </div>
+                </li>
+                <li>
+                    <a href="index.html"><i class="fa fa-star"></i> <span class="nav-label">Главная страница</span></a>
+                </li>
+                <li>
+                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Устройства</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="index_list_all.html">Все устройства</a></li>
+                        </ul>
+                </li>
+                <li class="active">
+                    <a href="index_d3.html"><i class="fa fa-sitemap"></i> <span class="nav-label">Топология</span> </a>
+                </li>
+                <li>
+                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Сервисы</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="index_service.html">Добавить сервис</a></li>
+                        </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Статистика</span> </a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-table"></i> <span class="nav-label">История</span> </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+ 
+    <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                    <form role="search" class="navbar-form-custom" method="post" action="#">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <script src="js/d3.min.js"></script>
+            <script src="js/jquery-2.1.1.js"></script>
+            
+            <div id="graphContainer" class="graphContainer">
+            <script>
+            $(function(){
+                var data = {
+                    "nodes": [
+                        { "id": 0, "name": "Zelax 1", "icon": "img/switch.svg", "IpAddress": "10.30.1.1" },
+                        { "id": 1, "name": "Zelax 2", "icon": "img/switch-d.svg", "IpAddress": "10.20.1.1" },
+                        { "id": 2, "name": "Zelax 3", "icon": "img/switch.svg", "IpAddress": "10.31.1.1" },
+                        { "id": 3, "name": "Router 31", "icon": "img/router.svg", "IpAddress": "10.36.2.1" },
+                        { "id": 4, "name": "Router 3", "icon": "img/router-d.svg", "IpAddress": "10.31.5.1" },
+                        { "id": 5, "name": "Router 41", "icon": "img/router.svg", "IpAddress": "10.31.5.1" },
+                        { "id": 6, "name": "Router 5", "icon": "img/router.svg", "IpAddress": "10.31.5.1" },
+                        { "id": 7, "name": "Brocade 1", "icon": "img/switch.svg", "IpAddress": "10.31.5.1" },
+                        { "id": 8, "name": "Brocade 2", "icon": "img/switch.svg", "IpAddress": "10.31.5.1" }
+                    ],
+                    "links": [     
+                        { "source": 0, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 1, "name": "Z1-Z2", "Link_found": "0", "Bandwidth": "10" },
+                        { "source": 0, "port_src": "Ethernet1/0/2", "port_dst": "Ethernet1/0/2", "target": 2, "name": "Z1-Z3", "Link_found": "1", "Bandwidth": "1" },
+                        { "source": 0, "port_src": "Ethernet1/0/4", "port_dst": "Ethernet1/0/3", "target": 3, "name": "Z1-R31", "Link_found": "0", "Bandwidth": "100" },
+                        { "source": 1, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 2, "name": "Z2-Z3", "Link_found": "1", "Bandwidth": "15" },
+                        { "source": 3, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 4, "name": "R31-R3", "Link_found": "0", "Bandwidth": "5" },
+                        { "source": 3, "port_src": "Ethernet1/0/1", "port_dst": "Ethernet1/0/2", "target": 5, "name": "R31-R41", "Link_found": "0", "Bandwidth": "25" },
+                        { "source": 3, "port_src": "Ethernet1/0/5", "port_dst": "Ethernet1/0/3", "target": 6, "name": "R31-R5", "Link_found": "1", "Bandwidth": "10" },
+                        { "source": 4, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 5, "name": "R3-R41", "Link_found": "0", "Bandwidth": "5" },
+                        { "source": 4, "port_src": "Ethernet1/0/5", "port_dst": "Ethernet1/0/1", "target": 6, "name": "R3-R5", "Link_found": "0", "Bandwidth": "100" },
+                        { "source": 5, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 6, "name": "R41-R5", "Link_found": "1", "Bandwidth": "1" },
+                        { "source": 6, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 7, "name": "R5-B1", "Link_found": "0", "Bandwidth": "15" },
+                        { "source": 7, "port_src": "Ethernet1/0/1", "port_dst": "Ethernet1/0/5", "target": 8, "name": "B1-B2", "Link_found": "0", "Bandwidth": "10" }
+                    ]
+                };          
+
+                // used to store the number of links between two nodes. 
+                // mLinkNum[data.links[i].source + "," + data.links[i].target] = data.links[i].linkindex;
+                var mLinkNum = {};
+
+                // sort links first
+                sortLinks();                                
+
+                // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+                setLinkIndexAndNum();
+
+                var w = document.getElementById('page-wrapper').offsetWidth - 40,
+                    h = document.documentElement.clientHeight*0.80;
+
+                var force = d3.layout.force()
+                              .size([w, h])
+                              .linkDistance(250)
+                              .charge(-2500)
+                              .on("tick", tick);
+
+                var drag = force.drag()
+                                .on("dragstart", dragstart);
+                              
+                    force
+                        .nodes(d3.values(data.nodes))
+                        .links(data.links)
+                        .start();
+
+                var svg = d3.select(".graphContainer").append("svg:svg")
+                            .attr("width", w)
+                            .attr("height", h);
+
+                var path = svg.append("svg:g")
+                              .selectAll("path")
+                              .data(force.links())
+                              .enter().append("svg:path")
+                              .attr("class", "link")
+                              .on("click", onClickLink);
+
+                var circle = svg.selectAll(".circle")
+                                .data(force.nodes())
+                                .enter().append("g")
+                                .attr("class", "circle")
+                                .on("click", OnClickNode)
+                                .call(force.drag);
+                    circle.append("svg:image")
+                                .attr("xlink:href", function(d) { return d.icon; })
+                                .attr("x", "-25px")
+                                .attr("y", "-25px")
+                                .attr("cursor", "pointer")
+                                .attr("width", "75px")
+                                .attr("height", "75px");
+                    circle.append("svg:text")
+                                .attr("x", 50)
+                                .attr("y", ".51em")
+                                .style("font-size", 12)
+                                .style("font-family", "sans-serif")
+                                .text(function(d) { return d.name; });
+                            
+                var current_h = h,
+                    current_w = w-50;
+                
+                // Overlay panel with node information (top-right corner)
+                var overlay = d3.select(".graphContainer").append("div")
+                                .attr("class", "njg-overlay");
+
+                var closeOverlay = overlay.append("a")
+                                    .attr("class", "njg-close")
+                                    .on("click", function() { 
+                                        overlay.classed("njg-hidden", true); 
+                                        current_w = w;
+                                    svg = d3.selectAll("svg")
+                                            .attr("width", current_w)
+                                            .attr("height", current_h);
+                                    force.size([current_w, current_h]);
+                                    });
+
+                var overlayInner = overlay.append("div")
+                                   .attr("class", "njg-inner");
+                
+                var connlist = d3.select(".col-lg-12")
+                                 .attr("class", "njg-hidden")
+
+                var closeConnlist = d3.select(".panel")
+                                        .append("a")
+                                        .attr("class", "njg-close")
+                                        .on("click", function() {
+                                            connlist.attr("class", "njg-hidden");
+                                        current_h = h;
+                                        svg = d3.selectAll("svg")
+                                            .attr("width", current_w+50)
+                                            .attr("height", current_h);
+                                        force.size([current_w, current_h]);
+                                        });
+
+
+                function OnClickNode(d) {
+                    d3.selectAll("text")
+                        .style("font-size", 12)
+                        .style("font-weight", "normal");
+                    d3.select(this).select("text").transition()
+                        .style("font-size", 16)
+                        .style("font-weight", "bold");
+                    
+                    var overlay = d3.select(".njg-overlay"),
+                        overlayInner = d3.select(".njg-overlay > .njg-inner"),
+                        html = "<h4>" + d.name + "</h4>";
+                    html += '<table class="table table-striped"><tbody>';
+                    html += '<tr><th scope="row">Device Type</th><td>' + d.device_type + '</td></tr>';
+                    html += '<tr><th scope="row">Protocol ver.</th><td>' + d.protocol_vers + '</td></tr>';
+                    html += '<tr><th scope="row">Vendor</th><td>' + d.company + '</td></tr>';
+                    html += '<tr><th scope="row">IP Address</th><td>' + d.IpAddress + '</td></tr>';
+                    html += '<tr><th scope="row">IP Connection</th><td>' + d.ip_conn + '</td></tr>';
+                    html += '<tr><th scope="row">Port</th><td>' + d.port + '</td></tr>';
+                    html += '<tr><th scope="row">HW Address</th><td>' + d.hw_address + '</td></tr>';
+                    html += '<tr><th scope="row">Serial</th><td>' + d.serial + '</td></tr>';
+                    html += '</tbody></table>';
+                    overlayInner.html(html);
+                    overlay.classed("njg-hidden", false);
+                    overlay.style("display", "block");
+                    
+                    var connlist_label = d3.select(".ibox-title");
+                    html = "<h5>" + d.name + " Links</h5>";
+                    connlist_label.html(html);
+                    
+                    var connlist_device = d3.select("#link_inf");
+                    html = '<thead><tr><th>Active Port</th><th>Neighbour</th><th>Neighbour Port</th><th>Bandwidth</th><th>Link Found</th></tr></thead><tbody>';
+                    var flag = 0;
+                    for (var i = 0; i < data.links.length; i++) 
+                    {
+                        if (data.links[i].source.id == d.id)
+                        {
+                            html += '<tr><td>' + data.links[i].port_src + '</td><td>' + data.links[i].target.name + '</td><td>' + data.links[i].port_dst + '</td><td>' + data.links[i].Bandwidth + ' Mbit/s</td><td>' + data.links[i].Link_found + '</td></tr>';
+                            flag = 1;
+                        }
+                        if (data.links[i].target.id == d.id)
+                        {
+                            html += '<tr><td>' + data.links[i].port_dst + '</td><td>' + data.links[i].source.name + '</td><td>' + data.links[i].port_src + '</td><td>' + data.links[i].Bandwidth + ' Mbit/s</td><td>' + data.links[i].Link_found + '</td></tr>';
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 0)
+                    {
+                        html += '<tr><td>No Active Links</td></tr>'
+                    }
+                    html += '</tbody>';
+                    connlist_device.html(html);
+                    connlist.attr("class", "connlist-visible");
+                    
+                    console.log("link_table: " + document.getElementById('link_table').offsetHeight);
+                    console.log("h: " + h);
+                    
+                    current_h = h - document.getElementById('link_table').offsetHeight + 25;
+                    current_w = w*0.8;
+                    
+                    console.log("current_h: " + current_h + " current_w: " + current_w);
+                    
+                    svg = d3.selectAll("svg")
+                            .attr("width", current_w+50)
+                            .attr("height", current_h);
+
+                    force.size([current_w, current_h]);
+                    
+                    d3.selectAll("path").attr("class", "link");
+                } 
+
+                function onClickLink(d) {
+                    d3.selectAll("text")
+                        .style("font-size", 12)
+                        .style("font-weight", "normal");
+                    
+                    d3.selectAll("path").attr("class", "link");
+                    d3.select(this).attr("class", "active_link");
+
+                    overlay.classed("njg-hidden", true);
+                    
+                    var connlist_label = d3.select(".ibox-title");
+                    var html = "<h5>Link: " + d.source.name + " - " + d.target.name + "</h5>";
+                    connlist_label.html(html);
+                    
+                    var connlist_link = d3.select("#link_inf");
+                    html = '<thead><tr><th>' + d.source.name + ' Port</th><th>' + d.target.name + ' Port</th><th>Bandwidth</th><th>Link Found</th></tr></thead>';
+                    html += '<tbody><tr><td>' + d.port_src + '</td><td>' + d.port_dst + '</td><td>' + d.Bandwidth + ' Mbit/s</td><td>' + d.Link_found + '</td></tr></tbody>';
+                    connlist_link.html(html);
+                    
+                    connlist.attr("class", "connlist-visible");
+                    
+                    current_h = h - document.getElementById('link_table').offsetHeight + 25;
+                    current_w = w*0.8;
+
+                    svg = d3.selectAll("svg")
+                            .attr("width", current_w+50)
+                            .attr("height", current_h);
+
+                    force.size([current_w, current_h]);
+                }
+                
+                
+                // Use elliptical arc path segments to doubly-encode directionality.
+                function tick() {
+                    
+                    circle.attr("x", function(d) { return d.x = Math.max(20, Math.min(current_w - 50, d.x)); })
+                          .attr("y", function(d) { return d.y = Math.max(20, Math.min(current_h - 50, d.y)); });
+                    
+                    path.attr("d", function(d) {
+                        // get the total link numbers between source and target node
+                        var lTotalLinkNum = mLinkNum[d.source.id + "," + d.target.id] || mLinkNum[d.target.id + "," + d.source.id];
+                        if(lTotalLinkNum > 1)
+                        {
+                            var dx = d.target.x - d.source.x,
+                                dy = d.target.y - d.source.y,
+                                dr = Math.sqrt(dx * dx + dy * dy);
+                                // if there are multiple links between these two nodes, we need generate different dr for each path
+                            dr = dr/(1 + (1/lTotalLinkNum) * (d.linkindex - 1));
+                                // generate svg path
+                            return "M" + d.source.x + "," + d.source.y + 
+                                    "A" + dr + "," + dr + " 0 0 1," + d.target.x + "," + d.target.y + 
+                                    "A" + dr + "," + dr + " 0 0 0," + d.source.x + "," + d.source.y; 
+                        }       
+                        // generate svg path
+                        return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;   
+                    });
+
+                    // Add tooltip to the connection path
+                    path.append("svg:title")
+                        .text(function(d, i) { return d.name; });
+
+                    circle.attr("transform", function(d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
+                } 
+                
+                function dragstart(d) {
+                  d3.select(this).classed("fixed", d.fixed = true);
+                }
+
+
+                // sort the links by source, then target
+                function sortLinks()
+                {                               
+                    data.links.sort(function(a,b) {
+                        if (a.source > b.source) 
+                        {
+                            return 1;
+                        }
+                        else if (a.source < b.source) 
+                        {
+                            return -1;
+                        }
+                        else 
+                        {
+                            if (a.target > b.target) 
+                            {
+                                return 1;
+                            }
+                            if (a.target < b.target) 
+                            {
+                                return -1;
+                            }
+                            else 
+                            {
+                                return 0;
+                            }
+                        }
+                    });
+                }
+
+                //any links with duplicate source and target get an incremented 'linknum'
+                function setLinkIndexAndNum()
+                {                               
+                    for (var i = 0; i < data.links.length; i++) 
+                    {
+                        if (i != 0 &&
+                            data.links[i].source == data.links[i-1].source &&
+                            data.links[i].target == data.links[i-1].target) 
+                        {
+                            data.links[i].linkindex = data.links[i-1].linkindex + 1;
+                        }
+                        else 
+                        {
+                            data.links[i].linkindex = 1;
+                        }
+                        // save the total number of links between two nodes
+                        if(mLinkNum[data.links[i].target + "," + data.links[i].source] !== undefined)
+                        {
+                            mLinkNum[data.links[i].target + "," + data.links[i].source] = data.links[i].linkindex;
+                        }
+                        else
+                        {
+                            mLinkNum[data.links[i].source + "," + data.links[i].target] = data.links[i].linkindex;
+                        }
+                    }
+                }   
+            });         
+            </script>                    
+            </div>
+        </div>
+        
+            <div id="link_table" class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="ibox-title">
+                        <h5>Links </h5>
+                    </div>
+                    <table id="link_inf" class="table table-striped">
+                    </table>
+                </div>
+            </div>
+        
+        <div class="footer">
+            <div>
+                <strong>Copyright</strong> SDN Project Company &copy; 2016
+            </div>
+        </div>
+    
+    </div>
+
+        </div>
+        
+    <!-- Mainly scripts -->
+    
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+</body>
+</html>
