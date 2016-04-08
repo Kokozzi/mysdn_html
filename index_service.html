@@ -12,19 +12,23 @@
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
     <link href="css/plugins/steps/jquery.steps.css" rel="stylesheet">
+    
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    
     <link href="css/topology.css" rel="stylesheet">
     <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
     
     <style>
-
         .wrapper-content {
           padding: 5px 5px 5px;
         }
         
-        .wizard > .content > .body  position: relative; }
-
+        .wizard > .content > .body {
+            position: relative; 
+        }
     </style>
 </head>
 
@@ -155,7 +159,7 @@
                                         </div>
                                         <div id="collapseTwo" class="panel-collapse collapse">
                                             <div class="panel-body">
-                                                <div class="col-sm-10"><input type="text" class="form-control"></div>
+                                                <div class="col-sm-10"><input id="ip_input" type="text" class="form-control"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -168,7 +172,7 @@
                                         <div id="collapseThree" class="panel-collapse collapse">
                                         <div class="panel-body">
                                             <div class="row">
-                                            <div class="col-sm-5"><input type="text" class="form-control"></div>
+                                            <div class="col-sm-5"><input id="udp_port_input" type="number" class="form-control"></div>
                                             <div class="radio radio radio-inline" style="margin-top:10px;">
                                                 <input type="radio" id="inlineRadio1" value="option1" name="radioInline" checked="">
                                                 <label for="inlineRadio1"> TCP </label>
@@ -200,20 +204,6 @@
                                     </thead>
                                     <tbody>
                                         <tr></tr>
-                                    <tr>
-                                        <td><input type="checkbox"  checked class="i-checks" name="input[]"></td>
-                                        <td>Router 3</td>
-                                        <td>Ethernet1/0/3</td>
-                                        <td>192.168.255.101</td>
-                                        <td><i class="fa fa-times text-danger"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" class="i-checks" name="input[]"></td>
-                                        <td>Brocade 1</td>
-                                        <td><i class="fa fa-times text-danger"></i></td>
-                                        <td><i class="fa fa-times text-danger"></i></td>
-                                        <td>666 TCP</td>
-                                    </tr>
                                     </tbody>
                                 </table>
                         </div>
@@ -231,14 +221,16 @@
 
                 <h1>Требования к сервису</h1>
                 <fieldset>
-                    <h2>Terms and Conditions</h2>
-                    <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
+                    <div class="text-center" style="margin-top: 120px">
+                        <h2>You did it Man :-)</h2>
+                    </div>
                 </fieldset>
 
                 <h1>Завершение</h1>
                 <fieldset>
-                    <h2>Terms and Conditions</h2>
-                    <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
+                    <div class="text-center" style="margin-top: 120px">
+                        <h2>You did it Man :-)</h2>
+                    </div>
                 </fieldset>
             </form>
         </div>
@@ -269,6 +261,7 @@
     <script src="js/inspinia.js"></script>
     <script src="js/plugins/pace/pace.min.js"></script>
     
+    <!-- Topology script -->
     <script src="js/d3.min.js"></script>
     <script src="my.js"></script>
     
@@ -278,7 +271,6 @@
     <!-- Jquery Validate -->
     <script src="js/plugins/validate/jquery.validate.min.js"></script>
     
-
     <script>
         $(document).ready(function(){
             $("#wizard").steps();
@@ -359,44 +351,12 @@
                     });
        });
     </script>
-    <script>
-        $(document).ready(function(){
-            var add_button = document.getElementById("device_add");
-            var del_button = document.getElementById("dev_delete");
-
-            var handler_add = function() {
-                var dev = document.getElementById("select_device").title;
-                var port = document.getElementById("port_select").value;
-                
-                var table = $( "#all_dev_table tbody" )[0];
-                var cell = table.rows[1].cells[1];
-                
-                $('#all_dev_table tr:last').after('<tr><td><input type="checkbox" class="i-checks" name="input[]"></td><td>' + dev + '</td><td>' + port + '</td><td>192.168.255.101</td><td><i class="fa fa-times text-danger"></i></td></tr>');
-                
-                /*var html = "<thead><tr><th></th><th>Узел </th><th>Физический порт </th><th>IP адрес</th><th>TCP/UDP порт</th></tr></thead><tbody>";
-                html += '<tr><td><input type="checkbox" class="i-checks" name="input[]"></td><td>' + dev + '</td><td>' + port + '</td><td>192.168.255.101</td><td><i class="fa fa-times text-danger"></i></td></tr>';
-                html += "</tbody>"
-                $( "#all_dev_table ").html(html);*/
-            }
-            
-            var handler_delete = function() {
-                var dev = document.getElementById("select_device").title;
-                var port = document.getElementById("port_select").value;
-                
-                var table = $( "#all_dev_table tbody" )[0];
-                var cell = table.rows[1].cells[1];
-                
-                $('#all_dev_table tr:last').after('<tr><td><input type="checkbox" class="i-checks" name="input[]"></td><td>' + cell.innerHTML + '</td><td>' + port + '</td><td>192.168.255.101</td><td><i class="fa fa-times text-danger"></i></td></tr>');
-                
-                /*var html = "<thead><tr><th></th><th>Узел </th><th>Физический порт </th><th>IP адрес</th><th>TCP/UDP порт</th></tr></thead><tbody>";
-                html += '<tr><td><input type="checkbox" class="i-checks" name="input[]"></td><td>' + dev + '</td><td>' + port + '</td><td>192.168.255.101</td><td><i class="fa fa-times text-danger"></i></td></tr>';
-                html += "</tbody>"
-                $( "#all_dev_table ").html(html);*/
-            }
-        
-            add_button.addEventListener("click", handler_add, false);
-            del_button.addEventListener("click", handler_delete, false);
-        });
-    </script>
+    
+    <!-- Wizard interaction script -->
+    
+    <script src="js/plugins/toastr/toastr.min.js"></script>
+    
+    <script src="services.js"></script>
+    
 </body>
 </html>

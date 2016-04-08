@@ -92,9 +92,10 @@ $(function () {
         d3.select(this).select("text").transition()
             .style("font-size", 16)
             .style("font-weight", "bold");
-        /*$( "#select_device" ).html('<h3>Выбран узел:</h3><h3 id="sel_dev">' + d.name + '</h3>');*/
-        document.getElementById("select_device").innerHTML = "Выбран узел " + d.name;
+        document.getElementById("select_device").innerHTML = "Выбран узел: " + d.name;
         document.getElementById("select_device").title = d.name;
+        document.getElementById("ip_input").value = "";
+        document.getElementById("udp_port_input").value = "";
         var html = "<option></option>";
         for (var i = 0; i < d.Ports.length; i++) 
         {
