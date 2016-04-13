@@ -11,7 +11,10 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
+    
+    <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
     <link href="css/plugins/steps/jquery.steps.css" rel="stylesheet">
+    <link href="css/plugins/select2/select2.min.css" rel="stylesheet">
     
     <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
     
@@ -19,8 +22,7 @@
     <link href="css/style.css" rel="stylesheet">
     
     <link href="css/topology.css" rel="stylesheet">
-    <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
-    
+
     <style>
         .wrapper-content {
           padding: 5px 5px 5px;
@@ -107,14 +109,15 @@
 
             <div id="graphContainer" class="graphContainer">
             </div>
-            
+                        
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox">
                         <div class="ibox-content">
-                        <h3>
+                        <h3 id="name_header">
                             Добавление нового сервиса
                         </h3>
+                        
             <form id="form" action="#" class="wizard-big">
                 <h1>Название</h1>
                 <fieldset>
@@ -122,13 +125,13 @@
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label><h3>Название сервиса</h3></label>
-                                <input id="userName" name="userName" type="text" class="form-control required">
+                                <input id="serviceName" name="serviceName" type="text" class="form-control required" title="Необходимо название">
                             </div>
                         </div>
                     </div>
                 </fieldset>
-                <h1>Выбор узлов</h1>
-                <fieldset>          
+                <h1>Выбор узлов доступа</h1>
+                <fieldset>        
                     <div class="row">
                         <div class="col-lg-6">
                             <label><h3 id="select_device">Выберите узел на топологии</h3></label>
@@ -212,25 +215,56 @@
                 </div>
                 </fieldset>
 
-                <h1>Требования к маршруту</h1>
-                <fieldset>
-                    <div class="text-center" style="margin-top: 120px">
-                        <h2>You did it Man :-)</h2>
-                    </div>
-                </fieldset>
-
                 <h1>Требования к сервису</h1>
                 <fieldset>
-                    <div class="text-center" style="margin-top: 120px">
-                        <h2>You did it Man :-)</h2>
+                <div class="row">
+                    <div class="col-lg-6">
+                       <label><h3>Требования к маршруту прохождения трафика</h3></label>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                       <div class="panel panel-default">
+                                       <div class="panel-heading">
+                                            <i class="fa fa-info-circle"></i> Обязательные узлы
+                                        </div>
+                                        <select id="node_list" class="select2_demo_2 form-control" multiple="multiple">
+                                        </select>
+                                        </div>
+                                        <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <i class="fa fa-info-circle"></i> Обязательные линки
+                                        </div>
+                                        <select id="link_list" class="select2_demo_2 form-control" multiple="multiple">
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                        <button id="node_add" class="btn btn-primary " type="button"><i class="fa fa-check"></i>&nbsp;Добавить</button> 
                     </div>
-                </fieldset>
-
-                <h1>Завершение</h1>
-                <fieldset>
-                    <div class="text-center" style="margin-top: 120px">
-                        <h2>You did it Man :-)</h2>
+                    <div class="col-lg-6">
+                       <label><h3>Требования к качеству сервиса</h3></label>
+                       <div class="panel-body" style="padding: 0px;">
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">Полоса пропускания</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseFour" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                            <div class="col-sm-6"><input id="bw_input" type="number" class="form-control"></div>
+                                           <label style="margin-bottom: 0px; margin-top: 10px;">Kbit/s</label>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
+                    
+                </div>
+                <div class="ibox-title back-change hidden"></div>
                 </fieldset>
             </form>
         </div>
@@ -249,114 +283,79 @@
     
     </div>
     </div>
+    
+    <script>
+    var data = {
+        "nodes": [
+            { "id": 0, "name": "Zelax 1", "icon": "img/switch.svg", "IpAddress": "10.30.1.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/1", "name2": 2}]},
+            { "id": 1, "name": "Zelax 2", "icon": "img/switch-d.svg", "IpAddress": "10.20.1.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/19", "name2": 2}]},
+            { "id": 2, "name": "Zelax 3", "icon": "img/switch.svg", "IpAddress": "10.31.1.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/29", "name2": 2}]},
+            { "id": 3, "name": "Router 31", "icon": "img/router.svg", "IpAddress": "10.36.2.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/39", "name2": 2}]},
+            { "id": 4, "name": "Router 3", "icon": "img/router-d.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/2", "name2": 2}, {"name": "Ethernet1/0/9", "name2": 2}] },
+            { "id": 5, "name": "Router 41", "icon": "img/router.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/1", "name2": 2}, {"name": "Ethernet1/0/3", "name2": 2}]},
+            { "id": 6, "name": "Router 5", "icon": "img/router.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/3", "name2": 2}, {"name": "Ethernet1/0/19", "name2": 2}]},
+            { "id": 7, "name": "Brocade 1", "icon": "img/switch.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/5", "name2": 2}, {"name": "Ethernet1/0/1", "name2": 2}]},
+            { "id": 8, "name": "Brocade 2", "icon": "img/switch.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/5", "name2": 2}, {"name": "Ethernet1/0/8", "name2": 2}, {"name": "Ethernet1/0/54", "name2": 2}, {"name": "Ethernet1/0/1", "name2": 2}]}
+        ],
+        "links": [
+            { "source": 0, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 1, "name": "Z1-Z2", "Link_found": "0", "Bandwidth": "10" },
+            { "source": 0, "port_src": "Ethernet1/0/2", "port_dst": "Ethernet1/0/2", "target": 2, "name": "Z1-Z3", "Link_found": "1", "Bandwidth": "1" },
+            { "source": 0, "port_src": "Ethernet1/0/4", "port_dst": "Ethernet1/0/3", "target": 3, "name": "Z1-R31", "Link_found": "0", "Bandwidth": "100" },
+            { "source": 1, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 2, "name": "Z2-Z3", "Link_found": "1", "Bandwidth": "15" },
+            { "source": 3, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 4, "name": "R31-R3", "Link_found": "0", "Bandwidth": "5" },
+            { "source": 3, "port_src": "Ethernet1/0/1", "port_dst": "Ethernet1/0/2", "target": 5, "name": "R31-R41", "Link_found": "0", "Bandwidth": "25" },
+            { "source": 3, "port_src": "Ethernet1/0/5", "port_dst": "Ethernet1/0/3", "target": 6, "name": "R31-R5", "Link_found": "1", "Bandwidth": "10" },
+            { "source": 4, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 5, "name": "R3-R41", "Link_found": "0", "Bandwidth": "5" },
+            { "source": 4, "port_src": "Ethernet1/0/5", "port_dst": "Ethernet1/0/1", "target": 6, "name": "R3-R5", "Link_found": "0", "Bandwidth": "100" },
+            { "source": 5, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 6, "name": "R41-R5", "Link_found": "1", "Bandwidth": "1" },
+            { "source": 6, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 7, "name": "R5-B1", "Link_found": "0", "Bandwidth": "15" },
+            { "source": 7, "port_src": "Ethernet1/0/1", "port_dst": "Ethernet1/0/5", "target": 8, "name": "B1-B2", "Link_found": "0", "Bandwidth": "10" }
+        ]
+    };
+    var result = {};
         
+    </script>
+    
     <!-- Mainly scripts -->
     <script src="js/jquery-2.1.1.js"></script>
     <script src="js/bootstrap.min.js"></script>
-
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
+    
     <!-- Custom and plugin javascript -->
     <script src="js/inspinia.js"></script>
     <script src="js/plugins/pace/pace.min.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    
+    <!-- Chosen -->
+    <script src="js/plugins/chosen/chosen.jquery.js"></script>
+    
+    <!-- iCheck -->
+    <script src="js/plugins/iCheck/icheck.min.js"></script>
+    
+    <!-- MENU -->
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+    <!-- Select2 -->
+    <script src="js/plugins/select2/select2.full.min.js"></script>
     
     <!-- Topology script -->
     <script src="js/d3.min.js"></script>
     <script src="my.js"></script>
     
     <!-- Steps -->
-    <script src="js/plugins/staps/jquery.steps.min.js"></script>
+    <script src="js/steps/jquery.steps.min.js"></script>
     
     <!-- Jquery Validate -->
     <script src="js/plugins/validate/jquery.validate.min.js"></script>
     
-    <script>
-        $(document).ready(function(){
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex)
-                {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex)
-                    {
-                        return true;
-                    }
+    <!-- Toastr events plugin -->
+    <script src="js/plugins/toastr/toastr.min.js"></script>
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18)
-                    {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex)
-                    {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex)
-                {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18)
-                    {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3)
-                    {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex)
-                {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex)
-                {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                        errorPlacement: function (error, element)
-                        {
-                            element.before(error);
-                        },
-                        rules: {
-                            confirm: {
-                                equalTo: "#password"
-                            }
-                        }
-                    });
-       });
-    </script>
+    <!-- Form Wizard interaction script -->
+    <script src="form.js"></script>
     
     <!-- Wizard interaction script -->
-    
-    <script src="js/plugins/toastr/toastr.min.js"></script>
-    
     <script src="services.js"></script>
+
     
 </body>
 </html>

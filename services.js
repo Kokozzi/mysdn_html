@@ -16,8 +16,23 @@ $(function () {
         }
     }
     
+    function validate_port(raw_port) {
+        if (raw_port === '<i class="fa fa-times text-danger"></i>') {
+            return raw_port;
+        } else {
+            if ($("#inlineRadio1").is(":checked") === true) {
+                raw_port += " TCP";
+            } else {
+                raw_port += " UDP";
+            }
+            return raw_port;
+        }
+    }
+    
     var add_button = document.getElementById("device_add"),
         del_button = document.getElementById("dev_delete"),
+        node_add = document.getElementById("node_add"),
+        table = $("#all_dev_table tbody")[0],
         
         handler_add = function () {
             var msg = "",
@@ -26,10 +41,13 @@ $(function () {
                 port = input_check(document.getElementById("port_select").value),
                 ip = input_check(document.getElementById("ip_input").value),
                 udp_port = input_check(document.getElementById("udp_port_input").value),
-                table = $("#all_dev_table tbody")[0],
                 flag = true,
                 i = 1,
-                leng = 0;
+                j = 1,
+                leng = 0,
+                names = d3.selectAll("text")[0],
+                links = d3.selectAll("path")[0],
+                html = "";
             
             toastr.options = {
                 "closeButton": false,
@@ -65,6 +83,8 @@ $(function () {
                 toastr.error(msg, title);
                 return;
             }
+            
+            udp_port = validate_port(udp_port);
 
             for (i = 1; i < table.rows.length; i += 1) {
                 if (table.rows[i].cells[1].innerHTML === dev) {
@@ -79,13 +99,33 @@ $(function () {
                 $('#all_dev_table tr:last').after('<tr><td><input type="checkbox" class="i-checks" name="input[]"></td><td>' + dev + '</td><td>' + port + '</td><td>' + ip + '</td><td>' + udp_port + '</td></tr>');
             }
             
+            for (i = 0; i < names.length; i += 1) {
+                flag = true;
+                for (j = 1; j < table.rows.length; j += 1) {
+                    if (table.rows[j].cells[1].innerHTML === names[i].innerHTML) {
+                        flag = false;
+                    }
+                }
+                if (flag === true) {
+                    html += '<option value="' + names[i].innerHTML + '">' + names[i].innerHTML +'</option>';
+                }
+            }
+            
+            $("#node_list").html(html);
+
+            html = "";
+
+            for (var i = 0; i < links.length; i += 1) {
+                html += '<option value="' + links[i].__data__.name + '">' + links[i].__data__.name +'</option>'; 
+            }
+            $("#link_list").html(html);
+            
             leng = table.rows.length - 1;
             document.getElementById("device_count").innerHTML = "Всего добавлено узлов: " + leng;
         },
 
         handler_delete = function () {
-            var table = $("#all_dev_table tbody")[0],
-                del_array = [],
+            var del_array = [],
                 pointer = 0,
                 i = 1,
                 leng = 0;
@@ -105,8 +145,45 @@ $(function () {
             
             leng = table.rows.length - 1;
             document.getElementById("device_count").innerHTML = "Всего добавлено узлов: " + leng;
+        },
+    
+        handler_require = function () {
+            var names = d3.selectAll("text")[0],
+                links = d3.selectAll("path")[0];
+            
+            for (var i = 0; i < names.length; i += 1) {
+                if (names[i].innerHTML.search("(Обязательно)") !== -1) {
+                    names[i].innerHTML = names[i].innerHTML.replace(" (Обязательно)","");
+                    names[i].style.fontSize = 12;
+                    names[i].style.fontWeight = "normal";
+                    names[i].style.fontStyle = "normal";
+                }
+            }
+            
+            $("#node_list :selected").each(function () {
+                for (var i = 0; i < names.length; i += 1) {
+                    if ($(this).val() === names[i].innerHTML) {
+                        names[i].innerHTML += " (Обязательно)";
+                        names[i].style.fontSize = 12;
+                        names[i].style.fontWeight = "bold";
+                        names[i].style.fontStyle = "italic";
+                    }
+                }
+            });
+            
+            d3.selectAll("path")
+                .attr("class", "link");
+            
+            $("#link_list :selected").each(function () {
+                for (var i = 0; i < links.length; i += 1) {
+                    if ($(this).val() === links[i].__data__.name) {
+                        links[i].attributes[0].value = "active_link";
+                    }
+                }
+            });
         };
 
     add_button.addEventListener("click", handler_add, false);
     del_button.addEventListener("click", handler_delete, false);
+    node_add.addEventListener("click", handler_require, false);
 });

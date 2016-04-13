@@ -68,7 +68,7 @@
 
 .wizard > .steps > ul > li
 {
-    width: 20%;
+    width: 33%;
 }
 
 .wizard > .steps > ul > li,
@@ -164,10 +164,12 @@
     padding: 2.5%;
 }
 
+/*
 .wizard > .content > .body ul
 {
     list-style: disc !important;
 }
+*/
 
 .wizard > .content > .body ul > li
 {
@@ -181,11 +183,13 @@
     height: 100%;
 }
 
+/*
 .wizard > .content > .body input
 {
     display: block;
     border: 1px solid #ccc;
 }
+*/
 
 .wizard > .content > .body input[type="checkbox"]
 {

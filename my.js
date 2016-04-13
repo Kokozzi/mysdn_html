@@ -1,32 +1,5 @@
 $(function () {
-    var data = {
-        "nodes": [
-            { "id": 0, "name": "Zelax 1", "icon": "img/switch.svg", "IpAddress": "10.30.1.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/1", "name2": 2}]},
-            { "id": 1, "name": "Zelax 2", "icon": "img/switch-d.svg", "IpAddress": "10.20.1.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/19", "name2": 2}]},
-            { "id": 2, "name": "Zelax 3", "icon": "img/switch.svg", "IpAddress": "10.31.1.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/29", "name2": 2}]},
-            { "id": 3, "name": "Router 31", "icon": "img/router.svg", "IpAddress": "10.36.2.1", "Ports": [{"name": "Ethernet1/0/9", "name2": 2}, {"name": "Ethernet1/0/39", "name2": 2}]},
-            { "id": 4, "name": "Router 3", "icon": "img/router-d.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/2", "name2": 2}, {"name": "Ethernet1/0/9", "name2": 2}] },
-            { "id": 5, "name": "Router 41", "icon": "img/router.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/1", "name2": 2}, {"name": "Ethernet1/0/3", "name2": 2}]},
-            { "id": 6, "name": "Router 5", "icon": "img/router.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/3", "name2": 2}, {"name": "Ethernet1/0/19", "name2": 2}]},
-            { "id": 7, "name": "Brocade 1", "icon": "img/switch.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/5", "name2": 2}, {"name": "Ethernet1/0/1", "name2": 2}]},
-            { "id": 8, "name": "Brocade 2", "icon": "img/switch.svg", "IpAddress": "10.31.5.1", "Ports": [{"name": "Ethernet1/0/5", "name2": 2}, {"name": "Ethernet1/0/8", "name2": 2}, {"name": "Ethernet1/0/54", "name2": 2}, {"name": "Ethernet1/0/1", "name2": 2}]}
-        ],
-        "links": [
-            { "source": 0, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 1, "name": "Z1-Z2", "Link_found": "0", "Bandwidth": "10" },
-            { "source": 0, "port_src": "Ethernet1/0/2", "port_dst": "Ethernet1/0/2", "target": 2, "name": "Z1-Z3", "Link_found": "1", "Bandwidth": "1" },
-            { "source": 0, "port_src": "Ethernet1/0/4", "port_dst": "Ethernet1/0/3", "target": 3, "name": "Z1-R31", "Link_found": "0", "Bandwidth": "100" },
-            { "source": 1, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 2, "name": "Z2-Z3", "Link_found": "1", "Bandwidth": "15" },
-            { "source": 3, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 4, "name": "R31-R3", "Link_found": "0", "Bandwidth": "5" },
-            { "source": 3, "port_src": "Ethernet1/0/1", "port_dst": "Ethernet1/0/2", "target": 5, "name": "R31-R41", "Link_found": "0", "Bandwidth": "25" },
-            { "source": 3, "port_src": "Ethernet1/0/5", "port_dst": "Ethernet1/0/3", "target": 6, "name": "R31-R5", "Link_found": "1", "Bandwidth": "10" },
-            { "source": 4, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 5, "name": "R3-R41", "Link_found": "0", "Bandwidth": "5" },
-            { "source": 4, "port_src": "Ethernet1/0/5", "port_dst": "Ethernet1/0/1", "target": 6, "name": "R3-R5", "Link_found": "0", "Bandwidth": "100" },
-            { "source": 5, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 6, "name": "R41-R5", "Link_found": "1", "Bandwidth": "1" },
-            { "source": 6, "port_src": "Ethernet1/0/3", "port_dst": "Ethernet1/0/1", "target": 7, "name": "R5-B1", "Link_found": "0", "Bandwidth": "15" },
-            { "source": 7, "port_src": "Ethernet1/0/1", "port_dst": "Ethernet1/0/5", "target": 8, "name": "B1-B2", "Link_found": "0", "Bandwidth": "10" }
-        ]
-    };
-
+    
     // used to store the number of links between two nodes. 
     // mLinkNum[data.links[i].source + "," + data.links[i].target] = data.links[i].linkindex;
     var mLinkNum = {};
@@ -64,7 +37,9 @@ $(function () {
                   .enter().append("svg:path")
                   .attr("class", "link")
                   .on("click", onClickLink);
-
+        path.append("svg:title")
+                    .text(function(d, i) { return d.name; });
+    
     var circle = svg.selectAll(".circle")
                     .data(force.nodes())
                     .enter().append("g")
@@ -86,12 +61,30 @@ $(function () {
                     .text(function(d) { return d.name; });
 
     function OnClickNode(d) {
-        d3.selectAll("text")
-            .style("font-size", 12)
-            .style("font-weight", "normal");
-        d3.select(this).select("text").transition()
-            .style("font-size", 16)
-            .style("font-weight", "bold");
+        var currentNode = d3.select(this).select("text")[0][0].innerHTML,
+            names = d3.selectAll("text")[0],
+            arr = [];
+        
+        arr = currentNode.split(' ');
+        if (arr[arr.length - 1] === 'доступа)' || arr[arr.length - 1] === '(Обязательно)') {
+            return;
+        }
+        
+        for (var i = 0; i < names.length; i += 1) {
+            arr = names[i].innerHTML.split(' ');
+            if (arr[arr.length - 1] !== 'доступа)' && arr[arr.length - 1] !== '(Обязательно)') {
+                if (names[i].innerHTML === currentNode) {
+                    names[i].style.fontSize = 16;
+                    names[i].style.fontWeight = "bold";
+                } else {
+                    names[i].style.fontSize = 12;
+                    names[i].style.fontWeight = "normal";
+                }
+                d3.selectAll("path")
+                    .attr("class", "link");
+            }
+        }
+        
         document.getElementById("select_device").innerHTML = "Выбран узел: " + d.name;
         document.getElementById("select_device").title = d.name;
         document.getElementById("ip_input").value = "";
@@ -101,8 +94,7 @@ $(function () {
         {
             html += "<option>" + d.Ports[i].name + "</option>";
         }
-        $( "#port_select" ).html(html);
-        
+        $("#port_select").html(html);
     } 
 
     function onClickLink(d) {
@@ -142,8 +134,8 @@ $(function () {
         });
 
         // Add tooltip to the connection path
-        path.append("svg:title")
-            .text(function(d, i) { return d.name; });
+        /*path.append("svg:title")
+            .text(function(d, i) { return d.name; });*/
 
         circle.attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")";
